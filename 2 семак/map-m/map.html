@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>the disabled map</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://maps.api.2gis.ru/2.0/loader.js?pkg=full"></script>
+    <script src="data.js"></script>
+    <link href="style.css" rel="stylesheet">
+
+    
+</head>
+
+<body>
+    
+    <table style="border-radius: 10px;">
+        <tr >
+                <th ><div class="menu" style="border-radius: 10px; background-color: rgb(205, 205, 249);"></div></th>
+                <th><div class="menu" id="" style="border-radius: 10px; background-color: rgb(205, 205, 249);" >Настройка интерфейса и маркеров</div></th>
+                <th><div class="menu" id="" style="border-radius: 10px; background-color: rgb(205, 205, 249);" onclick="addToMap()">Добавить элементы</div></th>
+        </tr>
+
+        <tr>
+            <th><div id="map"></div></th>
+            <th><div class="ways">
+                <table >
+                    <tr><th><div>Маркеры:</div></th></tr>
+                    <tr><th><div>Маршруты:</div></th></tr>
+                </table>
+                <button onclick="getCoords">"Экспорт</button>
+            </div></th>
+        </tr>
+
+        
+    </table>
+
+    <script type="text/javascript">
+        var map;
+        var coords = []
+        var bool = true;
+        var newPoint = false;               //создание новой точки на карте
+        var newWay = false;                 //создание нового маршрута
+        newWay = true;                 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+        //создание карты и дефолтных маркеров
+        DG.then(function () {
+            map = DG.map('map', {
+                center: [53.209077, 50.125091],
+                zoom: 15
+            });
+            for(i = 0; i < samgtu.length; i++)
+            {
+                DG.marker([samgtu[i][1], samgtu[i][2]]).addTo(map).bindPopup(samgtu[i][0] + "<br>" + '<img src="' + samgtu[i][3] + '">');
+            }
+            map.on('click', function(e) { 
+                var lat = e.latlng.lat;
+                var lng = e.latlng.lng;
+                coords.push([lat, lng]);
+                if(bool){
+                    polyline = DG.polyline(coords, {color: 'green'}).addTo(map);
+                    bool = false;
+                }
+                else{polyline.setLatLngs(coords);}
+            });
+        });
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        function addToMap()
+        {
+            $("table").append('<tr><th></th><th><button onclick="save()" class="save">Save way</button><button onclick="del()" class="delete">Delete last step</button></th></tr>')
+        }
+
+        getCoords()
+        {
+            let ans = "[";
+            for (let i = 0; i < coords.length; i++)
+            {
+                ans += 
+            }
+        }
+    
+        
+
+    </script>
+</body>

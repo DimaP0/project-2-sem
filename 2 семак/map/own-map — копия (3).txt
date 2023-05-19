@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>the disabled map</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://maps.api.2gis.ru/2.0/loader.js?pkg=full"></script>
+
+    <link href="styles.css" rel="stylesheet">
+
+    
+</head>
+
+<body>    
+    <table>
+        <tr>
+            <th><div id="map" ></div></th>
+            <th><div class="ways"></div></th>
+        </tr>
+        <tr>
+            <th></th>
+            <th>
+                <button onclick="save()" class="save">Save way</button>
+                <button onclick="del()" class="delete">Delete last step</button>
+            </th>
+        </tr>
+        </table>
+
+    <script type="text/javascript">
+        var map;
+        var lineIsSave = false;
+        var bool = true;
+        var count = 0;
+        var polyline;
+        var colors = ["green", "blue", "red", "yellow", "black", "orange"];
+        var saveCor = [];
+        var coords = []
+        var samgtu = [
+            ["Корпус 1", 53.209756, 50.124466, "https://avatars.mds.yandex.net/get-altay/1920875/2a00000174f188fc34e5d0c4f074ae617f93/XXXL"],
+            ["Главный корпус",53.208750, 50.124451, "https://avatars.mds.yandex.net/get-altay/1920875/2a00000174f188fc34e5d0c4f074ae617f93/XXXL"],
+            ["Корпус 8", 53.209350, 50.125886, "https://avatars.mds.yandex.net/get-altay/1920875/2a00000174f188fc34e5d0c4f074ae617f93/XXXL"]
+        ];
+        
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+        DG.then(function () {
+            map = DG.map('map', {
+                center: [53.209077, 50.125091],
+                zoom: 15
+            });
+            for(i = 0; i < samgtu.length; i++)
+            {
+                DG.marker([samgtu[i][1], samgtu[i][2]]).addTo(map).bindPopup(samgtu[i][0] + "<br>" + '<img src="' + samgtu[i][3] + '">');
+            }
+            map.on('click', function(e) { 
+                var lat = e.latlng.lat;
+                var lng = e.latlng.lng;
+                coords.push([lat, lng]);
+                if(bool){
+                    if (lineIsSave)
+                    {
+                        coords = [];
+                        polyline.setLatLngs([]);
+                    }
+                    polyline = DG.polyline(coords, {color: 'green'}).addTo(map);
+                    bool = false;
+                    lineIsSave = false;
+                }
+                else{polyline.setLatLngs(coords);}
+            });
+        });
+
+        
+       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+
+
+       function del()
+        {
+            
+            coords.pop();
+            //coords.push([count, count + 1]);
+            //count+=1
+            polyline.setLatLngs(coords);
+            //console.log(coords);
+        }
+
+        function save()
+        {
+            let name = prompt("Как назовём?");
+            saveCor.push([coords]);
+            $("div.ways").append('<div onclick="fo(this)" class = "saveWays" data="'+ count + '"> '+ name +' </div>');
+            console.log(saveCor);
+            coords = [];
+            polyline.setLatLngs(coords);
+            bool = true;
+            count++;
+            lineIsSave = true;
+        }
+
+        /*document.body.fo = function ()
+        {
+            //let data = $(this).attr();
+            let data = this.getAttribute("data");
+            alert(data);
+        }*/
+        function fo(data)
+        {
+            polyline.setLatLngs([]);
+            let c = ($(data).attr("data"));
+            polyline = DG.polyline(saveCor[c], {color: 'green'}).addTo(map);
+        }
+        
+        for (i = 0; i < saveCor.length; i ++)
+        {
+            var test = [];
+            test += ('['+saveCor+'],')
+        }
+        
+
+       </script>
+    
+    
+</body>
+</html>
